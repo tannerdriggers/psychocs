@@ -38,6 +38,10 @@
             this.uxDateTextbox = new System.Windows.Forms.TextBox();
             this.uxStartButton = new System.Windows.Forms.Button();
             this.uxCancelButton = new System.Windows.Forms.Button();
+            this.uxAgeWarning = new System.Windows.Forms.Label();
+            this.uxSexWarning = new System.Windows.Forms.Label();
+            this.uxSubIdWarning = new System.Windows.Forms.Label();
+            this.uxDateWarning = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // uxAgeLabel
@@ -54,7 +58,7 @@
             // 
             this.uxSexLabel.AutoSize = true;
             this.uxSexLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxSexLabel.Location = new System.Drawing.Point(70, 59);
+            this.uxSexLabel.Location = new System.Drawing.Point(70, 71);
             this.uxSexLabel.Name = "uxSexLabel";
             this.uxSexLabel.Size = new System.Drawing.Size(55, 25);
             this.uxSexLabel.TabIndex = 2;
@@ -64,7 +68,7 @@
             // 
             this.uxSubjectIdLabel.AutoSize = true;
             this.uxSubjectIdLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxSubjectIdLabel.Location = new System.Drawing.Point(12, 98);
+            this.uxSubjectIdLabel.Location = new System.Drawing.Point(12, 123);
             this.uxSubjectIdLabel.Name = "uxSubjectIdLabel";
             this.uxSubjectIdLabel.Size = new System.Drawing.Size(113, 25);
             this.uxSubjectIdLabel.TabIndex = 3;
@@ -74,7 +78,7 @@
             // 
             this.uxDateLabel.AutoSize = true;
             this.uxDateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxDateLabel.Location = new System.Drawing.Point(62, 148);
+            this.uxDateLabel.Location = new System.Drawing.Point(62, 185);
             this.uxDateLabel.Name = "uxDateLabel";
             this.uxDateLabel.Size = new System.Drawing.Size(63, 25);
             this.uxDateLabel.TabIndex = 4;
@@ -87,6 +91,7 @@
             this.uxAgeTextbox.Name = "uxAgeTextbox";
             this.uxAgeTextbox.Size = new System.Drawing.Size(141, 31);
             this.uxAgeTextbox.TabIndex = 5;
+            this.uxAgeTextbox.Text = "21";
             // 
             // uxSexTextbox
             // 
@@ -95,24 +100,26 @@
             this.uxSexTextbox.Items.AddRange(new object[] {
             "Male",
             "Female"});
-            this.uxSexTextbox.Location = new System.Drawing.Point(131, 56);
+            this.uxSexTextbox.Location = new System.Drawing.Point(131, 68);
             this.uxSexTextbox.Name = "uxSexTextbox";
             this.uxSexTextbox.Size = new System.Drawing.Size(141, 33);
             this.uxSexTextbox.TabIndex = 6;
+            this.uxSexTextbox.Text = "Male";
             // 
             // uxSubjectIdTextbox
             // 
             this.uxSubjectIdTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxSubjectIdTextbox.Location = new System.Drawing.Point(131, 95);
+            this.uxSubjectIdTextbox.Location = new System.Drawing.Point(131, 120);
             this.uxSubjectIdTextbox.Name = "uxSubjectIdTextbox";
             this.uxSubjectIdTextbox.Size = new System.Drawing.Size(141, 31);
             this.uxSubjectIdTextbox.TabIndex = 7;
+            this.uxSubjectIdTextbox.Text = "13";
             // 
             // uxDateTextbox
             // 
             this.uxDateTextbox.AllowDrop = true;
             this.uxDateTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxDateTextbox.Location = new System.Drawing.Point(131, 133);
+            this.uxDateTextbox.Location = new System.Drawing.Point(131, 170);
             this.uxDateTextbox.Multiline = true;
             this.uxDateTextbox.Name = "uxDateTextbox";
             this.uxDateTextbox.Size = new System.Drawing.Size(141, 64);
@@ -121,7 +128,7 @@
             // uxStartButton
             // 
             this.uxStartButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxStartButton.Location = new System.Drawing.Point(131, 230);
+            this.uxStartButton.Location = new System.Drawing.Point(131, 319);
             this.uxStartButton.Name = "uxStartButton";
             this.uxStartButton.Size = new System.Drawing.Size(141, 42);
             this.uxStartButton.TabIndex = 9;
@@ -133,7 +140,7 @@
             // 
             this.uxCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.uxCancelButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxCancelButton.Location = new System.Drawing.Point(12, 230);
+            this.uxCancelButton.Location = new System.Drawing.Point(12, 319);
             this.uxCancelButton.Name = "uxCancelButton";
             this.uxCancelButton.Size = new System.Drawing.Size(113, 42);
             this.uxCancelButton.TabIndex = 10;
@@ -141,13 +148,62 @@
             this.uxCancelButton.UseVisualStyleBackColor = true;
             this.uxCancelButton.Click += new System.EventHandler(this.uxCancelButton_Click);
             // 
+            // uxAgeWarning
+            // 
+            this.uxAgeWarning.AutoSize = true;
+            this.uxAgeWarning.BackColor = System.Drawing.SystemColors.Control;
+            this.uxAgeWarning.ForeColor = System.Drawing.Color.Firebrick;
+            this.uxAgeWarning.Location = new System.Drawing.Point(131, 52);
+            this.uxAgeWarning.Name = "uxAgeWarning";
+            this.uxAgeWarning.Size = new System.Drawing.Size(86, 13);
+            this.uxAgeWarning.TabIndex = 11;
+            this.uxAgeWarning.Text = "*Age is Required";
+            this.uxAgeWarning.Visible = false;
+            // 
+            // uxSexWarning
+            // 
+            this.uxSexWarning.AutoSize = true;
+            this.uxSexWarning.ForeColor = System.Drawing.Color.Firebrick;
+            this.uxSexWarning.Location = new System.Drawing.Point(131, 104);
+            this.uxSexWarning.Name = "uxSexWarning";
+            this.uxSexWarning.Size = new System.Drawing.Size(85, 13);
+            this.uxSexWarning.TabIndex = 12;
+            this.uxSexWarning.Text = "*Sex is Required";
+            this.uxSexWarning.Visible = false;
+            // 
+            // uxSubIdWarning
+            // 
+            this.uxSubIdWarning.AutoSize = true;
+            this.uxSubIdWarning.ForeColor = System.Drawing.Color.Firebrick;
+            this.uxSubIdWarning.Location = new System.Drawing.Point(131, 154);
+            this.uxSubIdWarning.Name = "uxSubIdWarning";
+            this.uxSubIdWarning.Size = new System.Drawing.Size(115, 13);
+            this.uxSubIdWarning.TabIndex = 13;
+            this.uxSubIdWarning.Text = "*Subject Id is Required";
+            this.uxSubIdWarning.Visible = false;
+            // 
+            // uxDateWarning
+            // 
+            this.uxDateWarning.AutoSize = true;
+            this.uxDateWarning.ForeColor = System.Drawing.Color.Firebrick;
+            this.uxDateWarning.Location = new System.Drawing.Point(131, 237);
+            this.uxDateWarning.Name = "uxDateWarning";
+            this.uxDateWarning.Size = new System.Drawing.Size(90, 13);
+            this.uxDateWarning.TabIndex = 14;
+            this.uxDateWarning.Text = "*Date is Required";
+            this.uxDateWarning.Visible = false;
+            // 
             // InfoForm
             // 
             this.AcceptButton = this.uxStartButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.uxCancelButton;
-            this.ClientSize = new System.Drawing.Size(290, 286);
+            this.ClientSize = new System.Drawing.Size(290, 373);
+            this.Controls.Add(this.uxDateWarning);
+            this.Controls.Add(this.uxSubIdWarning);
+            this.Controls.Add(this.uxSexWarning);
+            this.Controls.Add(this.uxAgeWarning);
             this.Controls.Add(this.uxCancelButton);
             this.Controls.Add(this.uxStartButton);
             this.Controls.Add(this.uxDateTextbox);
@@ -177,6 +233,10 @@
         private System.Windows.Forms.TextBox uxDateTextbox;
         private System.Windows.Forms.Button uxStartButton;
         private System.Windows.Forms.Button uxCancelButton;
+        private System.Windows.Forms.Label uxAgeWarning;
+        private System.Windows.Forms.Label uxSexWarning;
+        private System.Windows.Forms.Label uxSubIdWarning;
+        private System.Windows.Forms.Label uxDateWarning;
     }
 }
 

@@ -39,20 +39,72 @@ namespace psychocs
 
         private void uxStartButton_Click(object sender, EventArgs e)
         {
-            if (_GameForm == null)
+            if (_GameForm == null || _GameForm.IsDisposed)
             {
-                Sex = uxSexTextbox.Text;
-                SubjectId = uxSubjectIdTextbox.Text;
-                DateTime = uxDateTextbox.Text;
-
-                _GameForm = new GameForm(this)
+                if (CheckRequired())
                 {
-                    FormBorderStyle = FormBorderStyle.None,
-                    WindowState = FormWindowState.Maximized,
-                    TopMost = true
-                };
-                _GameForm.Show();
+                    Sex = uxSexTextbox.Text;
+                    SubjectId = uxSubjectIdTextbox.Text;
+                    DateTime = uxDateTextbox.Text;
+
+                    _GameForm = new GameForm(this)
+                    {
+                        FormBorderStyle = FormBorderStyle.None,
+                        WindowState = FormWindowState.Maximized,
+                        TopMost = true
+                    };
+                    _GameForm.Show();
+                }
             }
+        }
+
+        private bool CheckRequired()
+        {
+            ClearWarnings();
+
+            bool ans = true;
+
+            // Checks the textboxs to see if something is in them and pops up a warning if not
+            if (!IsCorrectString(uxAgeTextbox.Text))
+            {
+                uxAgeWarning.Visible = true;
+                ans = false;
+            }
+            if (!IsCorrectString(uxSexTextbox.Text))
+            {
+                uxSexWarning.Visible = true;
+                ans = false;
+            }
+            if (!IsCorrectString(uxSubjectIdTextbox.Text))
+            {
+                uxSubIdWarning.Visible = true;
+                ans = false;
+            }
+            if (!IsCorrectString(uxDateTextbox.Text))
+            {
+                uxDateWarning.Visible = true;
+                ans = false;
+            }
+
+            if (ans)
+            {
+                ClearWarnings();
+            }
+
+            return ans;
+        }
+
+        private void ClearWarnings()
+        {
+            uxAgeWarning.Visible = false;
+            uxSexWarning.Visible = false;
+            uxSubIdWarning.Visible = false;
+            uxDateWarning.Visible = false;
+        }
+
+        private bool IsCorrectString(string str)
+        {
+            return !string.IsNullOrWhiteSpace(str);
         }
     }
 }
