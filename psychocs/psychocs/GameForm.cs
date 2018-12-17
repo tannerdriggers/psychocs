@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -20,22 +21,37 @@ namespace psychocs
         /// </summary>
         private InfoForm _infoForm { get; }
 
+        private string dataFilePath;
+
         /// <summary>
         /// Whether or not the Game has actually been started or not
         /// </summary>
-        private volatile bool _started = false;
+        private bool _started;
+        private bool keyClicked;
+        private int randomNumber;
+        private bool correctResponse;
+        private string elapsedTime;
 
-        private volatile System.Windows.Forms.Timer _timer = new System.Windows.Forms.Timer();
+        private System.Windows.Forms.Timer everyCycleTimer;
+        private System.Windows.Forms.Timer numberCycleTimer;
+        private System.Windows.Forms.Timer programTimer;
 
-        /// <summary>
-        /// Number of times the user will see a number
-        /// </summary>
-        public int numberOfTests { get; set; }
+        private Stopwatch keyTime = new Stopwatch();
 
         public GameForm(InfoForm infoForm)
         {
             InitializeComponent();
             _infoForm = infoForm;
+            SetDefaults();
+
+            numberCycleTimer.Tick += new EventHandler(NumberTime);
+            numberCycleTimer.Interval = 250;
+
+            everyCycleTimer.Tick += new EventHandler(CircleMaskTime);
+            everyCycleTimer.Interval = 900 + 250;
+
+            programTimer.Tick += new EventHandler(End);
+            programTimer.Interval = 1000 * 60 * 5;
         }
 
         /// <summary>
@@ -49,24 +65,19 @@ namespace psychocs
                 using (StreamReader sr = new StreamReader(Path.Combine(GetRootDirectory(), "Stimuli/SART.txt")))
                 {
                     string text = sr.ReadToEnd();
-                    uxWelcomeLabel.Text = text;
-
-                    // Centers the Text to the window
-                    int width = Width / 2 - uxWelcomeLabel.Width / 2;
-                    int height = Height / 2 - uxWelcomeLabel.Height / 2;
-                    uxWelcomeLabel.Location = new Point(width, height);
+                    DisplayText(text);
                 }
             }
             catch (Exception)
             {
-                uxWelcomeLabel.Text = "Could not read the Welcome file. Contact an administrator.";
+                DisplayText("Could not read the Welcome file. Contact an administrator.");
             }
 
             // Creates the data file for the user
             try
             {
                 // Creating the File Name
-                var dataFileName = _infoForm.SubjectId + "_" + _infoForm.DateTime + ".csv";
+                var dataFileName = _infoForm.SubjectId + "_" + _infoForm.Date.ToString("yyyy-MM-dd_hh-mm") + ".csv";
                 foreach (var c in Path.GetInvalidFileNameChars())
                 {
                     if (c == '/' || c == ':')
@@ -79,15 +90,16 @@ namespace psychocs
                 dataFileName = dataFileName.Replace(' ', '_');
 
                 // Creating the File in the Data folder
-                var dataFilePath = Path.Combine(Path.Combine(GetRootDirectory(), "Data"), dataFileName);
-                try
+                dataFilePath = Path.Combine(Path.Combine(GetRootDirectory(), "Data"), dataFileName);
+                using (StreamWriter sw = new StreamWriter(dataFilePath, false))
                 {
-                    File.Create(dataFilePath);
-                } catch (Exception) { }
+                    sw.WriteLine("Subject_Id|Age|Sex|Reaction_Number|Reaction_Time|Correct_Response");
+                }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                uxWelcomeLabel.Text = "Could not create the data file. Contact an administrator.";
+                DisplayText("Could not create the data file. Contact an administrator.");
+                DisplayText(e.ToString());
             }
 
             // Loads the Circle Mask image
@@ -109,7 +121,7 @@ namespace psychocs
             }
             catch (Exception)
             {
-                uxWelcomeLabel.Text = "Cannot load the Circle Mask. Contact an administrator.";
+                DisplayText("Cannot load the Circle Mask. Contact an administrator.");
             }
 
             // Loads the Number for the Circle Mask
@@ -128,8 +140,18 @@ namespace psychocs
             }
             catch (Exception)
             {
-                uxWelcomeLabel.Text = "There is something wrong with the Numbers. Contact an administrator.";
+                DisplayText("There is something wrong with the Numbers. Contact an administrator.");
             }
+        }
+
+        private void DisplayText(string text)
+        {
+            uxWelcomeLabel.Text = text;
+
+            // Centers the Text to the window
+            int width = Width / 2 - uxWelcomeLabel.Width / 2;
+            int height = Height / 2 - uxWelcomeLabel.Height / 2;
+            uxWelcomeLabel.Location = new Point(width, height);
         }
 
         /// <summary>
@@ -155,6 +177,14 @@ namespace psychocs
                 Start();
             }
 
+            if (ModifierKeys == Keys.None && keyData == Keys.Space && randomNumber != 3)
+            {
+                correctResponse = true;
+            }
+
+            TimeSpan ts = keyTime.Elapsed;
+            elapsedTime = String.Format("{0:00}.{1:00}", ts.Seconds, ts.Milliseconds / 10);
+
             return base.ProcessDialogKey(keyData);
         }
 
@@ -164,6 +194,36 @@ namespace psychocs
         private void GameForm_Load(object sender, EventArgs e)
         {
             Init();
+        }
+
+        private void GameForm_Closed(object sender, EventArgs e)
+        {
+            SetDefaults();
+
+            Dispose();
+        }
+
+        private void SetDefaults()
+        {
+            _started = false;
+            keyClicked = false;
+            randomNumber = new Random().Next(0, 10);
+            correctResponse = false;
+            elapsedTime = "0";
+
+            if (everyCycleTimer != null)
+            {
+                everyCycleTimer.Stop();
+                numberCycleTimer.Stop();
+                programTimer.Stop();
+                keyTime.Reset();
+            }
+
+            everyCycleTimer = new System.Windows.Forms.Timer();
+            numberCycleTimer = new System.Windows.Forms.Timer();
+            programTimer = new System.Windows.Forms.Timer();
+
+            keyTime = new Stopwatch();
         }
 
         /// <summary>
@@ -176,21 +236,51 @@ namespace psychocs
             uxWelcomeLabel.Visible = false;
             uxCircleMask.Visible = true;
             uxNumberLabel.Visible = true;
-
-            var timer1 = new System.Windows.Forms.Timer();
-            timer1.Tick += new EventHandler(CircleMaskTime);
-            timer1.Interval = 300;
-            timer1.InitializeLifetimeService();
-            timer1.Start();
+            
+            everyCycleTimer.Start();
         }
 
         private void CircleMaskTime(object sender, EventArgs e)
         {
-            uxCircleMask.Visible = !uxCircleMask.Visible;
-            
-            if (uxCircleMask.Visible)
+            // The end of the cycle
+            if (!keyClicked)
             {
+                if (randomNumber == 3)
+                {
+                    correctResponse = true;
+                }
+            }
+            keyTime.Stop();
+            keyTime.Reset();
+            WriteToFile(elapsedTime);
 
+            // The start of the cycle
+            keyTime.Start();
+            numberCycleTimer.Start();
+            correctResponse = false;
+            keyClicked = false;
+            uxCircleMask.Visible = false;
+        }
+
+        private void NumberTime(object sender, EventArgs e)
+        {
+            uxCircleMask.Visible = true;
+            numberCycleTimer.Stop();
+
+            randomNumber = new Random().Next(0, 10);
+            uxNumberLabel.Text = randomNumber.ToString();
+        }
+
+        private void End(object sender, EventArgs e)
+        {
+            everyCycleTimer.Stop();
+        }
+
+        private void WriteToFile(string reactionTime)
+        {
+            using (StreamWriter sw = new StreamWriter(dataFilePath, true))
+            {
+                sw.WriteLine(_infoForm.SubjectId + "|" + _infoForm.Age + "|" + _infoForm.Sex + "|" + randomNumber + "|" + reactionTime + "|" + correctResponse);
             }
         }
     }

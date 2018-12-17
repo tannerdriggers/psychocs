@@ -78,6 +78,7 @@
             this.Name = "GameForm";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.GameForm_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameForm_Closed);
             ((System.ComponentModel.ISupportInitialize)(this.uxCircleMask)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

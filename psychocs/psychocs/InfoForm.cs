@@ -14,8 +14,9 @@ namespace psychocs
     {
         public string DateTime { get; set; }
         public string Sex { get; set; }
+        public string Age { get; set; }
         public string SubjectId { get; set; }
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
 
         private GameForm _GameForm { get; set; }
 
@@ -24,7 +25,8 @@ namespace psychocs
             InitializeComponent();
 
             // Set the _DateTime to the time the form opens
-            DateTime = System.DateTime.Now.ToString();
+            Date = System.DateTime.Now;
+            DateTime = Date.ToString("MM/dd/yyyy hh:mm tt");
             uxDateTextbox.Text = DateTime;
         }
 
@@ -46,6 +48,7 @@ namespace psychocs
                     Sex = uxSexTextbox.Text;
                     SubjectId = uxSubjectIdTextbox.Text;
                     DateTime = uxDateTextbox.Text;
+                    Age = uxAgeTextbox.Text;
 
                     _GameForm = new GameForm(this)
                     {
