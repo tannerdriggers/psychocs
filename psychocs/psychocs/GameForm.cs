@@ -28,6 +28,7 @@ namespace psychocs
         /// </summary>
         private bool _started;
         private bool keyClicked;
+        private bool _firstTime;
         private int randomNumber;
         private bool correctResponse;
         private string elapsedTime;
@@ -59,6 +60,10 @@ namespace psychocs
         /// </summary>
         private void Init()
         {
+            //SetDefaults();
+            _firstTime = false;
+            correctResponse = false;
+
             // Puts up the SART.txt file on the first screen
             try
             {
@@ -183,7 +188,7 @@ namespace psychocs
             }
 
             TimeSpan ts = keyTime.Elapsed;
-            elapsedTime = String.Format("{0:00}.{1:00}", ts.Seconds, ts.Milliseconds / 10);
+            elapsedTime = string.Format("{0:00}.{1:00}", ts.Seconds, ts.Milliseconds / 10);
 
             return base.ProcessDialogKey(keyData);
         }
@@ -199,12 +204,13 @@ namespace psychocs
         private void GameForm_Closed(object sender, EventArgs e)
         {
             SetDefaults();
-
+            _infoForm.GameFormClosed();
             Dispose();
         }
 
         private void SetDefaults()
         {
+            _firstTime = true;
             _started = false;
             keyClicked = false;
             randomNumber = new Random().Next(0, 10);
@@ -242,19 +248,29 @@ namespace psychocs
 
         private void CircleMaskTime(object sender, EventArgs e)
         {
-            // The end of the cycle
-            if (!keyClicked)
+            if (!_firstTime)
             {
-                if (randomNumber == 3)
+                // The end of the cycle
+                if (!keyClicked)
                 {
-                    correctResponse = true;
+                    if (randomNumber == 3)
+                    {
+                        correctResponse = true;
+                    }
+                    else
+                    {
+                        correctResponse = false;
+                    }
                 }
+                keyTime.Stop();
+                keyTime.Reset();
+                WriteToFile(elapsedTime);
             }
-            keyTime.Stop();
-            keyTime.Reset();
-            WriteToFile(elapsedTime);
+            _firstTime = false;
 
             // The start of the cycle
+            randomNumber = new Random().Next(0, 10);
+            uxNumberLabel.Text = randomNumber.ToString();
             keyTime.Start();
             numberCycleTimer.Start();
             correctResponse = false;
@@ -266,9 +282,6 @@ namespace psychocs
         {
             uxCircleMask.Visible = true;
             numberCycleTimer.Stop();
-
-            randomNumber = new Random().Next(0, 10);
-            uxNumberLabel.Text = randomNumber.ToString();
         }
 
         private void End(object sender, EventArgs e)
@@ -280,7 +293,8 @@ namespace psychocs
         {
             using (StreamWriter sw = new StreamWriter(dataFilePath, true))
             {
-                sw.WriteLine(_infoForm.SubjectId + "|" + _infoForm.Age + "|" + _infoForm.Sex + "|" + randomNumber + "|" + reactionTime + "|" + correctResponse);
+                sw.WriteLine(_infoForm.SubjectId + "|" + _infoForm.Age + "|" + _infoForm.Sex + "|" 
+                    + randomNumber + "|" + reactionTime + "|" + correctResponse);
             }
         }
     }
