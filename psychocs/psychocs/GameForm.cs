@@ -232,6 +232,7 @@ namespace psychocs
         private void Start()
         {
             _started = true;
+            correctResponse = false;
             uxCircleMask.BringToFront();
             uxWelcomeLabel.Visible = false;
             uxCircleMask.Visible = true;
