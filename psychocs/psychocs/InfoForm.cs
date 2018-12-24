@@ -109,5 +109,13 @@ namespace psychocs
         {
             return !string.IsNullOrWhiteSpace(str);
         }
+
+        public void GameFormClosed()
+        {
+            // Set the _DateTime to the time the form opens
+            Date = System.DateTime.Now;
+            DateTime = Date.ToString("MM/dd/yyyy hh:mm tt");
+            uxDateTextbox.Text = DateTime;
+        }
     }
 }
