@@ -43,7 +43,10 @@ namespace psychocs
         {
             InitializeComponent();
             _infoForm = infoForm;
-            SetDefaults();
+
+            everyCycleTimer = new System.Windows.Forms.Timer();
+            numberCycleTimer = new System.Windows.Forms.Timer();
+            programTimer = new System.Windows.Forms.Timer();
 
             numberCycleTimer.Tick += new EventHandler(NumberTime);
             numberCycleTimer.Interval = 250;
@@ -60,9 +63,7 @@ namespace psychocs
         /// </summary>
         private void Init()
         {
-            //SetDefaults();
-            _firstTime = false;
-            correctResponse = false;
+            SetDefaults();
 
             // Puts up the SART.txt file on the first screen
             try
@@ -75,14 +76,14 @@ namespace psychocs
             }
             catch (Exception)
             {
-                DisplayText("Could not read the Welcome file. Contact an administrator.");
+                DisplayText("Could not read the Welcome file. Please contact an administrator.");
             }
 
             // Creates the data file for the user
             try
             {
                 // Creating the File Name
-                var dataFileName = _infoForm.SubjectId + "_" + _infoForm.Date.ToString("yyyy-MM-dd_hh-mm") + ".csv";
+                var dataFileName = _infoForm.SubjectId + "_" + _infoForm.Date.ToString("yyyy-MM-dd_hh-mm");
                 foreach (var c in Path.GetInvalidFileNameChars())
                 {
                     if (c == '/' || c == ':')
@@ -94,17 +95,23 @@ namespace psychocs
                 }
                 dataFileName = dataFileName.Replace(' ', '_');
 
+                // Create Data Folder
+                var dataDir = Path.Combine(GetRootDirectory(), "psychocs_Data");
+                Directory.CreateDirectory(dataDir);
+
                 // Creating the File in the Data folder
-                dataFilePath = Path.Combine(Path.Combine(GetRootDirectory(), "Data"), dataFileName);
+                dataFilePath = Path.Combine(dataDir, dataFileName);
+
+                dataFilePath = RenameFile(dataFilePath) + ".csv";
+
                 using (StreamWriter sw = new StreamWriter(dataFilePath, false))
                 {
-                    sw.WriteLine("Subject_Id|Age|Sex|Reaction_Number|Reaction_Time|Correct_Response");
+                    sw.WriteLine("Subject_Id,Age,Sex,Reaction_Number,Reaction_Time,Correct_Response");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                DisplayText("Could not create the data file. Contact an administrator.");
-                DisplayText(e.ToString());
+                DisplayText("Could not create the data file. Please contact an administrator.");
             }
 
             // Loads the Circle Mask image
@@ -126,7 +133,7 @@ namespace psychocs
             }
             catch (Exception)
             {
-                DisplayText("Cannot load the Circle Mask. Contact an administrator.");
+                DisplayText("Cannot load the Circle Mask. Please contact an administrator.");
             }
 
             // Loads the Number for the Circle Mask
@@ -145,12 +152,31 @@ namespace psychocs
             }
             catch (Exception)
             {
-                DisplayText("There is something wrong with the Numbers. Contact an administrator.");
+                DisplayText("There is something wrong with the Random Number Label. Please contact an administrator.");
             }
+        }
+
+        private string RenameFile(string fileName)
+        {
+            int count = 1;
+
+            string fileNameOnly = Path.GetFileNameWithoutExtension(fileName);
+            string extension = ".csv";
+            string path = Path.GetDirectoryName(fileName);
+            string newFullPath = fileName;
+
+            while (File.Exists(newFullPath + extension))
+            {
+                string tempFileName = string.Format("{0}({1})", fileNameOnly, count++);
+                newFullPath = Path.Combine(path, tempFileName);
+            }
+
+            return newFullPath;
         }
 
         private void DisplayText(string text)
         {
+            uxWelcomeLabel.Visible = true;
             uxWelcomeLabel.Text = text;
 
             // Centers the Text to the window
@@ -181,14 +207,20 @@ namespace psychocs
             {
                 Start();
             }
-
-            if (ModifierKeys == Keys.None && keyData == Keys.Space && randomNumber != 3)
+            else
             {
-                correctResponse = true;
-            }
+                if (ModifierKeys == Keys.None && keyData == Keys.Space)
+                {
+                    if (randomNumber != 3)
+                    {
+                        correctResponse = true;
+                    }
+                    keyClicked = true;
 
-            TimeSpan ts = keyTime.Elapsed;
-            elapsedTime = string.Format("{0:00}.{1:00}", ts.Seconds, ts.Milliseconds / 10);
+                    TimeSpan ts = keyTime.Elapsed;
+                    elapsedTime = string.Format("{0:00}.{1:00}", ts.Seconds, ts.Milliseconds / 10);
+                }
+            }
 
             return base.ProcessDialogKey(keyData);
         }
@@ -215,7 +247,7 @@ namespace psychocs
             keyClicked = false;
             randomNumber = new Random().Next(0, 10);
             correctResponse = false;
-            elapsedTime = "0";
+            elapsedTime = "00.00";
 
             if (everyCycleTimer != null)
             {
@@ -224,10 +256,6 @@ namespace psychocs
                 programTimer.Stop();
                 keyTime.Reset();
             }
-
-            everyCycleTimer = new System.Windows.Forms.Timer();
-            numberCycleTimer = new System.Windows.Forms.Timer();
-            programTimer = new System.Windows.Forms.Timer();
 
             keyTime = new Stopwatch();
         }
@@ -245,6 +273,7 @@ namespace psychocs
             uxNumberLabel.Visible = true;
             
             everyCycleTimer.Start();
+            programTimer.Start();
         }
 
         private void CircleMaskTime(object sender, EventArgs e)
@@ -262,6 +291,7 @@ namespace psychocs
                     {
                         correctResponse = false;
                     }
+                    elapsedTime = "N/A";
                 }
                 keyTime.Stop();
                 keyTime.Reset();
@@ -288,14 +318,17 @@ namespace psychocs
         private void End(object sender, EventArgs e)
         {
             everyCycleTimer.Stop();
+            uxCircleMask.Visible = false;
+            uxNumberLabel.Visible = false;
+            DisplayText("End of the Test! Press Escape to finish.");
         }
 
         private void WriteToFile(string reactionTime)
         {
             using (StreamWriter sw = new StreamWriter(dataFilePath, true))
             {
-                sw.WriteLine(_infoForm.SubjectId + "|" + _infoForm.Age + "|" + _infoForm.Sex + "|" 
-                    + randomNumber + "|" + reactionTime + "|" + correctResponse);
+                sw.WriteLine(_infoForm.SubjectId + "," + _infoForm.Age + "," + _infoForm.Sex + "," 
+                    + randomNumber + "," + reactionTime + "," + correctResponse);
             }
         }
     }

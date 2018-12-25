@@ -42,6 +42,8 @@
             this.uxSexWarning = new System.Windows.Forms.Label();
             this.uxSubIdWarning = new System.Windows.Forms.Label();
             this.uxDateWarning = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // uxAgeLabel
@@ -78,7 +80,7 @@
             // 
             this.uxDateLabel.AutoSize = true;
             this.uxDateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxDateLabel.Location = new System.Drawing.Point(62, 185);
+            this.uxDateLabel.Location = new System.Drawing.Point(62, 172);
             this.uxDateLabel.Name = "uxDateLabel";
             this.uxDateLabel.Size = new System.Drawing.Size(63, 25);
             this.uxDateLabel.TabIndex = 4;
@@ -153,7 +155,7 @@
             this.uxAgeWarning.AutoSize = true;
             this.uxAgeWarning.BackColor = System.Drawing.SystemColors.Control;
             this.uxAgeWarning.ForeColor = System.Drawing.Color.Firebrick;
-            this.uxAgeWarning.Location = new System.Drawing.Point(131, 52);
+            this.uxAgeWarning.Location = new System.Drawing.Point(72, 52);
             this.uxAgeWarning.Name = "uxAgeWarning";
             this.uxAgeWarning.Size = new System.Drawing.Size(86, 13);
             this.uxAgeWarning.TabIndex = 11;
@@ -164,7 +166,7 @@
             // 
             this.uxSexWarning.AutoSize = true;
             this.uxSexWarning.ForeColor = System.Drawing.Color.Firebrick;
-            this.uxSexWarning.Location = new System.Drawing.Point(131, 104);
+            this.uxSexWarning.Location = new System.Drawing.Point(71, 104);
             this.uxSexWarning.Name = "uxSexWarning";
             this.uxSexWarning.Size = new System.Drawing.Size(85, 13);
             this.uxSexWarning.TabIndex = 12;
@@ -175,7 +177,7 @@
             // 
             this.uxSubIdWarning.AutoSize = true;
             this.uxSubIdWarning.ForeColor = System.Drawing.Color.Firebrick;
-            this.uxSubIdWarning.Location = new System.Drawing.Point(131, 154);
+            this.uxSubIdWarning.Location = new System.Drawing.Point(71, 154);
             this.uxSubIdWarning.Name = "uxSubIdWarning";
             this.uxSubIdWarning.Size = new System.Drawing.Size(115, 13);
             this.uxSubIdWarning.TabIndex = 13;
@@ -186,12 +188,32 @@
             // 
             this.uxDateWarning.AutoSize = true;
             this.uxDateWarning.ForeColor = System.Drawing.Color.Firebrick;
-            this.uxDateWarning.Location = new System.Drawing.Point(131, 237);
+            this.uxDateWarning.Location = new System.Drawing.Point(71, 237);
             this.uxDateWarning.Name = "uxDateWarning";
             this.uxDateWarning.Size = new System.Drawing.Size(90, 13);
             this.uxDateWarning.TabIndex = 14;
             this.uxDateWarning.Text = "*Date is Required";
             this.uxDateWarning.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(21, 197);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(98, 15);
+            this.label1.TabIndex = 15;
+            this.label1.Text = "(Month/Day/Year";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(14, 212);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(105, 15);
+            this.label2.TabIndex = 16;
+            this.label2.Text = "Hour:Min AM/PM)";
             // 
             // InfoForm
             // 
@@ -200,6 +222,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.uxCancelButton;
             this.ClientSize = new System.Drawing.Size(290, 373);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.uxDateWarning);
             this.Controls.Add(this.uxSubIdWarning);
             this.Controls.Add(this.uxSexWarning);
@@ -237,6 +261,8 @@
         private System.Windows.Forms.Label uxSexWarning;
         private System.Windows.Forms.Label uxSubIdWarning;
         private System.Windows.Forms.Label uxDateWarning;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

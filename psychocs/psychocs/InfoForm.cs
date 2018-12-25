@@ -47,7 +47,7 @@ namespace psychocs
                 {
                     Sex = uxSexTextbox.Text;
                     SubjectId = uxSubjectIdTextbox.Text;
-                    DateTime = uxDateTextbox.Text;
+                    Date = Convert.ToDateTime(uxDateTextbox.Text);
                     Age = uxAgeTextbox.Text;
 
                     _GameForm = new GameForm(this)
@@ -68,23 +68,43 @@ namespace psychocs
             bool ans = true;
 
             // Checks the textboxs to see if something is in them and pops up a warning if not
-            if (!IsCorrectString(uxAgeTextbox.Text))
+            if (!IsCorrectString(uxAgeTextbox.Text) || HasComma(uxAgeTextbox.Text))
             {
+                uxAgeWarning.Text = "*Age is Required";
+                if (HasComma(uxAgeTextbox.Text))
+                {
+                    uxAgeWarning.Text += " Without a Comma";
+                }
                 uxAgeWarning.Visible = true;
                 ans = false;
             }
-            if (!IsCorrectString(uxSexTextbox.Text))
+            if (!IsCorrectString(uxSexTextbox.Text) || HasComma(uxSexTextbox.Text))
             {
+                uxSexWarning.Text = "*Sex is Required";
+                if (HasComma(uxSexTextbox.Text))
+                {
+                    uxSexWarning.Text += " Without a Comma";
+                }
                 uxSexWarning.Visible = true;
                 ans = false;
             }
-            if (!IsCorrectString(uxSubjectIdTextbox.Text))
+            if (!IsCorrectString(uxSubjectIdTextbox.Text) || HasComma(uxSubjectIdTextbox.Text))
             {
+                uxSubIdWarning.Text = "*Subject Id is Required";
+                if (HasComma(uxSubjectIdTextbox.Text))
+                {
+                    uxSubIdWarning.Text += " Without a Comma";
+                }
                 uxSubIdWarning.Visible = true;
                 ans = false;
             }
-            if (!IsCorrectString(uxDateTextbox.Text))
+            if (!IsCorrectString(uxDateTextbox.Text) || !IsCorrectDateTimeFormat(uxDateTextbox.Text) || HasComma(uxDateTextbox.Text))
             {
+                uxDateWarning.Text = "*Date is Required";
+                if (HasComma(uxDateTextbox.Text))
+                {
+                    uxDateWarning.Text += " Without a Comma";
+                }
                 uxDateWarning.Visible = true;
                 ans = false;
             }
@@ -110,6 +130,27 @@ namespace psychocs
             return !string.IsNullOrWhiteSpace(str);
         }
 
+        private bool HasComma(string str)
+        {
+            return str.Contains(',');
+        }
+
+        private bool IsCorrectDateTimeFormat(string str)
+        {
+            try
+            {
+                Convert.ToDateTime(str);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Does stuff when the Game Form Closes
+        /// </summary>
         public void GameFormClosed()
         {
             // Set the _DateTime to the time the form opens
