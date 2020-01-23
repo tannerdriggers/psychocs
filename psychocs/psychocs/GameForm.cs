@@ -68,11 +68,8 @@ namespace psychocs
             // Puts up the SART.txt file on the first screen
             try
             {
-                using (StreamReader sr = new StreamReader(Path.Combine(GetRootDirectory(), "Stimuli/SART.txt")))
-                {
-                    string text = sr.ReadToEnd();
-                    DisplayText(text);
-                }
+                string text = Properties.Resources.SART;
+                DisplayText(text);
             }
             catch (Exception)
             {
@@ -120,7 +117,7 @@ namespace psychocs
                 uxCircleMask.Visible = false;
 
                 // Loading the Image
-                uxCircleMask.Image = Image.FromFile(Path.Combine(Path.Combine(GetRootDirectory(), "Stimuli"), "circleMask2.png"));
+                uxCircleMask.Image = Properties.Resources.circleMask2;
 
                 // Resizing
                 uxCircleMask.Width = Width / 8;
